@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Cozinha</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .refresh-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            background: #28a745;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-left: auto;
+        }
+
+        .refresh-btn:hover {
+            background: #218838;
+            transform: scale(1.05);
+        }
+
+        .pedidos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .pedido-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            border-left: 5px solid #667eea;
+        }
+
+        .pedido-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .pedido-card.status-pendente {
+            border-left-color: #ffc107;
+        }
+
+        .pedido-card.status-preparando {
+            border-left-color: #17a2b8;
+        }
+
+        .pedido-card.status-pronto {
+            border-left-color: #28a745;
+        }
+
+        .pedido-card.status-concluido {
+            border-left-color: #6c757d;
+            opacity: 0.7;
+        }
+
+        .pedido-card.status-cancelado {
+            border-left-color: #dc3545;
+            opacity: 0.7;
+        }
+
+        .pedido-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .pedido-id {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .pedido-mesa {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .status-pendente {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-preparando {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-pronto {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-concluido {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .status-cancelado {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .pedido-itens {
+            margin-bottom: 15px;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .item-quantidade {
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 10px;
+        }
+
+        .pedido-observacoes {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .pedido-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 2px solid #eee;
+        }
+
+        .pedido-total {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #764ba2;
+        }
+
+        .pedido-data {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .acao-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .acao-btn {
+            flex: 1;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .acao-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-preparando {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-pronto {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-concluir {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-cancelar {
+            background: #dc3545;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.5em;
+            padding: 50px;
+        }
+
+        .sem-pedidos {
+            text-align: center;
+            color: white;
+            font-size: 1.3em;
+            padding: 50px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+
+            .refresh-btn {
+                margin-left: 0;
+            }
+
+            .pedidos-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>👨‍🍳 Painel da Cozinha</h1>
+            <p>Gerencie todos os pedidos do restaurante</p>
+        </header>
+
+        <div class="controls">
+            <button class="filter-btn active" onclick="filtrarPedidos('todos')">Todos</button>
+            <button class="filter-btn" onclick="filtrarPedidos('pendente')">Pendentes</button>
+            <button class="filter-btn" onclick="filtrarPedidos('preparando')">Preparando</button>
+            <button class="filter-btn" onclick="filtrarPedidos('pronto')">Prontos</button>
+            <button class="filter-btn" onclick="filtrarPedidos('concluido')">Concluídos</button>
+            <button class="refresh-btn" onclick="carregarPedidos()">🔄 Atualizar</button>
+        </div>
+
+        <div id="loading" class="loading">Carregando pedidos...</div>
+        <div id="pedidosGrid" class="pedidos-grid"></div>
+    </div>
+
+    <script>
+        let filtroAtual = 'todos';
+        let todosPedidos = [];
+
+        async function carregarPedidos() {
+            try {
+                const response = await fetch('/api/pedidos');
+                const data = await response.json();
+
+                document.getElementById('loading').style.display = 'none';
+
+                if (data.success) {
+                    todosPedidos = data.pedidos;
+                    exibirPedidos();
+                }
+            } catch (error) {
+                document.getElementById('loading').innerHTML = 'Erro ao carregar pedidos.';
+                console.error('Erro:', error);
+            }
+        }
+
+        function filtrarPedidos(filtro) {
+            filtroAtual = filtro;
+            
+            // Atualiza botões
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            exibirPedidos();
+        }
+
+        function exibirPedidos() {
+            const pedidosGrid = document.getElementById('pedidosGrid');
+            
+            let pedidosFiltrados = todosPedidos;
+            if (filtroAtual !== 'todos') {
+                pedidosFiltrados = todosPedidos.filter(p => p.status === filtroAtual);
+            }
+
+            // Ordena: pendentes primeiro, depois por data mais recente
+            pedidosFiltrados.sort((a, b) => {
+                const ordemStatus = {
+                    'pendente': 1,
+                    'preparando': 2,
+                    'pronto': 3,
+                    'concluido': 4,
+                    'cancelado': 5
+                };
+                
+                if (ordemStatus[a.status] !== ordemStatus[b.status]) {
+                    return ordemStatus[a.status] - ordemStatus[b.status];
+                }
+                
+                return new Date(b.dataHora) - new Date(a.dataHora);
+            });
+
+            if (pedidosFiltrados.length === 0) {
+                pedidosGrid.innerHTML = `
+                    <div class="sem-pedidos">
+                        📭 Nenhum pedido ${filtroAtual === 'todos' ? '' : filtroAtual} encontrado
+                    </div>
+                `;
+                return;
+            }
+
+            pedidosGrid.innerHTML = '';
+
+            pedidosFiltrados.forEach(pedido => {
+                const card = document.createElement('div');
+                card.className = `pedido-card status-${pedido.status}`;
+                
+                const itensHTML = pedido.itens.map(item => `
+                    <div class="item-row">
+                        <span><span class="item-quantidade">${item.quantidade}x</span> ${item.nome}</span>
+                        <span>R$ ${item.subtotal.toFixed(2).replace('.', ',')}</span>
+                    </div>
+                `).join('');
+
+                const observacoesHTML = pedido.observacoes ? 
+                    `<div class="pedido-observacoes">📝 ${pedido.observacoes}</div>` : '';
+
+                const botoesAcao = getBotoesAcao(pedido);
+
+                const dataFormatada = new Date(pedido.dataHora).toLocaleString('pt-BR');
+
+                card.innerHTML = `
+                    <div class="pedido-header">
+                        <span class="pedido-id">Pedido #${pedido.id}</span>
+                        <span class="pedido-mesa">Mesa ${pedido.mesaId}</span>
+                    </div>
+                    <span class="status-badge status-${pedido.status}">${pedido.status.toUpperCase()}</span>
+                    <div class="pedido-itens">
+                        ${itensHTML}
+                    </div>
+                    ${observacoesHTML}
+                    <div class="pedido-footer">
+                        <span class="pedido-total">Total: R$ ${pedido.total.toFixed(2).replace('.', ',')}</span>
+                        <span class="pedido-data">${dataFormatada}</span>
+                    </div>
+                    ${botoesAcao}
+                `;
+
+                pedidosGrid.appendChild(card);
+            });
+        }
+
+        function getBotoesAcao(pedido) {
+            switch (pedido.status) {
+                case 'pendente':
+                    return `
+                        <div class="acao-buttons">
+                            <button class="acao-btn btn-preparando" onclick="atualizarStatus(${pedido.id}, 'preparando')">
+                                👨‍🍳 Iniciar Preparo
+                            </button>
+                            <button class="acao-btn btn-cancelar" onclick="atualizarStatus(${pedido.id}, 'cancelado')">
+                                ❌ Cancelar
+                            </button>
+                        </div>
+                    `;
+                case 'preparando':
+                    return `
+                        <div class="acao-buttons">
+                            <button class="acao-btn btn-pronto" onclick="atualizarStatus(${pedido.id}, 'pronto')">
+                                ✅ Pronto
+                            </button>
+                            <button class="acao-btn btn-cancelar" onclick="atualizarStatus(${pedido.id}, 'cancelado')">
+                                ❌ Cancelar
+                            </button>
+                        </div>
+                    `;
+                case 'pronto':
+                    return `
+                        <div class="acao-buttons">
+                            <button class="acao-btn btn-concluir" onclick="atualizarStatus(${pedido.id}, 'concluido')">
+                                🏁 Entregue
+                            </button>
+                        </div>
+                    `;
+                default:
+                    return '';
+            }
+        }
+
+        async function atualizarStatus(pedidoId, novoStatus) {
+            try {
+                const response = await fetch(`/api/pedidos/${pedidoId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        status: novoStatus
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    carregarPedidos();
+                } else {
+                    alert('Erro ao atualizar status: ' + data.error);
+                }
+            } catch (error) {
+                alert('Erro ao atualizar status. Tente novamente.');
+                console.error('Erro:', error);
+            }
+        }
+
+        // Carrega pedidos ao iniciar e atualiza a cada 10 segundos
+        carregarPedidos();
+        setInterval(carregarPedidos, 10000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fazer Pedido - Restaurante</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        header h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .mesa-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .mesa-info h2 {
+            color: #764ba2;
+        }
+
+        .cardapio-section {
+            margin-bottom: 30px;
+        }
+
+        .categoria-titulo {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .produto-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .produto-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .produto-info {
+            flex: 1;
+        }
+
+        .produto-nome {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .produto-preco {
+            color: #764ba2;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .produto-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .qty-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .qty-btn:hover {
+            background: #764ba2;
+            transform: scale(1.1);
+        }
+
+        .qty-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .resumo-pedido {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .resumo-titulo {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .resumo-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .resumo-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #764ba2;
+            border-top: 2px solid #667eea;
+            margin-top: 10px;
+        }
+
+        .observacoes {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 1em;
+            margin: 20px 0;
+            resize: vertical;
+        }
+
+        .btn-enviar {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-enviar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn-enviar:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.5em;
+            color: #667eea;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .produto-item {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .produto-controls {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍽️ Faça seu Pedido</h1>
+            <p>Selecione os itens desejados</p>
+        </header>
+
+        <div id="loading" class="loading">Carregando cardápio...</div>
+
+        <div id="pedidoContent" style="display: none;">
+            <div class="mesa-info">
+                <h2 id="mesaNumero">Mesa --</h2>
+            </div>
+
+            <form id="pedidoForm">
+                <div id="cardapioContainer"></div>
+
+                <div class="resumo-pedido">
+                    <div class="resumo-titulo">📋 Resumo do Pedido</div>
+                    <div id="resumoItens">
+                        <p style="color: #666;">Nenhum item selecionado</p>
+                    </div>
+                    <div class="resumo-total">
+                        <span>Total:</span>
+                        <span id="resumoTotal">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <textarea class="observacoes" id="observacoes" placeholder="Observações adicionais (opcional)..."></textarea>
+
+                <button type="submit" class="btn-enviar" id="btnEnviar" disabled>
+                    🛒 Enviar Pedido
+                </button>
+            </form>
+        </div>
+
+        <div id="successMessage" class="success-message" style="display: none;">
+            <h2>✅ Pedido Enviado com Sucesso!</h2>
+            <p id="pedidoNumero"></p>
+            <p>Aguarde que logo traremos seu pedido.</p>
+        </div>
+    </div>
+
+    <script>
+        let cardapio = [];
+        let carrinho = {};
+        let mesaId = null;
+
+        // Extrai mesa da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        mesaId = urlParams.get('mesa');
+
+        if (!mesaId) {
+            alert('Número da mesa não identificado!');
+            window.location.href = '/';
+        }
+
+        document.getElementById('mesaNumero').textContent = `Mesa ${mesaId}`;
+
+        async function carregarCardapio() {
+            try {
+                const response = await fetch('/api/cardapio');
+                const data = await response.json();
+
+                document.getElementById('loading').style.display = 'none';
+
+                if (data.success) {
+                    cardapio = data.cardapio;
+                    exibirCardapio();
+                    document.getElementById('pedidoContent').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('loading').innerHTML = 'Erro ao carregar cardápio.';
+                console.error('Erro:', error);
+            }
+        }
+
+        function exibirCardapio() {
+            const container = document.getElementById('cardapioContainer');
+            
+            // Agrupa por categoria
+            const categorias = {};
+            cardapio.forEach(produto => {
+                if (!categorias[produto.categoria]) {
+                    categorias[produto.categoria] = [];
+                }
+                categorias[produto.categoria].push(produto);
+            });
+
+            // Exibe cada categoria
+            for (const [categoria, produtos] of Object.entries(categorias)) {
+                const section = document.createElement('div');
+                section.className = 'cardapio-section';
+                
+                const titulo = document.createElement('h3');
+                titulo.className = 'categoria-titulo';
+                titulo.textContent = categoria;
+                section.appendChild(titulo);
+
+                produtos.forEach(produto => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'produto-item';
+                    itemDiv.innerHTML = `
+                        <div class="produto-info">
+                            <div class="produto-nome">${produto.nome}</div>
+                            <div class="produto-preco">R$ ${produto.preco.toFixed(2).replace('.', ',')}</div>
+                        </div>
+                        <div class="produto-controls">
+                            <button type="button" class="qty-btn" onclick="alterarQuantidade(${produto.id}, -1)">-</button>
+                            <span class="qty-value" id="qty-${produto.id}">0</span>
+                            <button type="button" class="qty-btn" onclick="alterarQuantidade(${produto.id}, 1)">+</button>
+                        </div>
+                    `;
+                    section.appendChild(itemDiv);
+                });
+
+                container.appendChild(section);
+            }
+        }
+
+        function alterarQuantidade(produtoId, delta) {
+            if (!carrinho[produtoId]) {
+                carrinho[produtoId] = 0;
+            }
+
+            carrinho[produtoId] += delta;
+            if (carrinho[produtoId] < 0) {
+                carrinho[produtoId] = 0;
+            }
+
+            document.getElementById(`qty-${produtoId}`).textContent = carrinho[produtoId];
+            atualizarResumo();
+        }
+
+        function atualizarResumo() {
+            const resumoItens = document.getElementById('resumoItens');
+            const resumoTotal = document.getElementById('resumoTotal');
+            const btnEnviar = document.getElementById('btnEnviar');
+
+            let total = 0;
+            let itensHTML = '';
+            let temItens = false;
+
+            for (const [produtoId, quantidade] of Object.entries(carrinho)) {
+                if (quantidade > 0) {
+                    temItens = true;
+                    const produto = cardapio.find(p => p.id === parseInt(produtoId));
+                    const subtotal = produto.preco * quantidade;
+                    total += subtotal;
+
+                    itensHTML += `
+                        <div class="resumo-item">
+                            <span>${produto.nome} x${quantidade}</span>
+                            <span>R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
+                        </div>
+                    `;
+                }
+            }
+
+            if (!temItens) {
+                resumoItens.innerHTML = '<p style="color: #666;">Nenhum item selecionado</p>';
+                btnEnviar.disabled = true;
+            } else {
+                resumoItens.innerHTML = itensHTML;
+                btnEnviar.disabled = false;
+            }
+
+            resumoTotal.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        }
+
+        async function enviarPedido(e) {
+            e.preventDefault();
+
+            const itens = [];
+            for (const [produtoId, quantidade] of Object.entries(carrinho)) {
+                if (quantidade > 0) {
+                    itens.push({
+                        produtoId: parseInt(produtoId),
+                        quantidade: quantidade
+                    });
+                }
+            }
+
+            const observacoes = document.getElementById('observacoes').value;
+
+            try {
+                const response = await fetch('/api/pedidos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        mesaId: mesaId,
+                        itens: itens,
+                        observacoes: observacoes
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('pedidoForm').style.display = 'none';
+                    document.getElementById('resumo-pedido').style.display = 'none';
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('pedidoNumero').textContent = 
+                        `Número do pedido: #${data.pedido.id}`;
+                } else {
+                    alert('Erro ao enviar pedido: ' + data.error);
+                }
+            } catch (error) {
+                alert('Erro ao enviar pedido. Tente novamente.');
+                console.error('Erro:', error);
+            }
+        }
+
+        document.getElementById('pedidoForm').addEventListener('submit', enviarPedido);
+
+        carregarCardapio();
+    </script>
+</body>
+</html>

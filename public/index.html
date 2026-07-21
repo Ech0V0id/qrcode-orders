@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Pedidos - Restaurantes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .mesas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .mesa-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .mesa-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .mesa-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .mesa-numero {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .status-disponivel {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-ocupada {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .qr-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .qr-container img {
+            max-width: 180px;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .admin-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .admin-link a {
+            color: white;
+            text-decoration: underline;
+            font-size: 1.1em;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.5em;
+            padding: 50px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .mesas-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍽️ Sistema de Pedidos</h1>
+            <p>Escaneie o QR Code da sua mesa para fazer seu pedido</p>
+        </header>
+
+        <div id="loading" class="loading">Carregando mesas...</div>
+        <div id="mesasGrid" class="mesas-grid"></div>
+
+        <div class="admin-link">
+            <a href="/admin">👨‍🍳 Acessar Painel da Cozinha</a>
+        </div>
+    </div>
+
+    <script>
+        async function carregarMesas() {
+            try {
+                const response = await fetch('/api/mesas');
+                const data = await response.json();
+
+                document.getElementById('loading').style.display = 'none';
+
+                if (data.success) {
+                    const mesasGrid = document.getElementById('mesasGrid');
+                    mesasGrid.innerHTML = '';
+
+                    data.mesas.forEach(mesa => {
+                        const mesaCard = document.createElement('div');
+                        mesaCard.className = 'mesa-card';
+                        mesaCard.innerHTML = `
+                            <div class="mesa-header">
+                                <span class="mesa-numero">Mesa ${mesa.numero}</span>
+                                <span class="status-badge status-${mesa.status}">${mesa.status.toUpperCase()}</span>
+                            </div>
+                            <div class="qr-container">
+                                <img src="${mesa.qrCode}" alt="QR Code Mesa ${mesa.numero}">
+                            </div>
+                            <a href="/pedido?mesa=${mesa.id}" class="btn">Fazer Pedido</a>
+                        `;
+                        mesasGrid.appendChild(mesaCard);
+                    });
+                }
+            } catch (error) {
+                document.getElementById('loading').innerHTML = 'Erro ao carregar mesas. Atualize a página.';
+                console.error('Erro:', error);
+            }
+        }
+
+        carregarMesas();
+    </script>
+</body>
+</html>
