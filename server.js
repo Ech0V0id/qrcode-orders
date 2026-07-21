@@ -27,8 +27,8 @@ let cardapio = [
     { id: 8, nome: 'Café', preco: 4.90, categoria: 'Bebidas' }
 ];
 
-// Inicializa algumas mesas
-for (let i = 1; i <= 10; i++) {
+// Inicializa 50 mesas
+for (let i = 1; i <= 50; i++) {
     mesas.push({ id: i, numero: i, status: 'disponivel' });
 }
 
