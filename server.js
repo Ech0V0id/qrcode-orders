@@ -180,6 +180,11 @@ app.get('/api/mesas/:mesaId', (req, res) => {
     res.json({ success: true, mesa: mesa });
 });
 
+// Página de rastrear pedido (cliente)
+app.get('/rastrear', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'rastrear.html'));
+});
+
 // Página inicial com lista de mesas e QR Codes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));

@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rastrear Pedido - Restaurante</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .pedido-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .pedido-numero {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .pedido-mesa {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 70px;
+            margin-bottom: 30px;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item.active {
+            opacity: 1;
+        }
+
+        .timeline-item.completed .timeline-icon {
+            background: #28a745;
+            color: white;
+        }
+
+        .timeline-item.completed::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 40px;
+            bottom: -20px;
+            width: 4px;
+            background: #28a745;
+            z-index: 1;
+        }
+
+        .timeline-item:last-child.completed::before {
+            display: none;
+        }
+
+        .timeline-icon {
+            position: absolute;
+            left: 0;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item.active .timeline-icon {
+            background: #667eea;
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(102, 126, 234, 0.8);
+            }
+        }
+
+        .timeline-content {
+            padding-top: 10px;
+        }
+
+        .timeline-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .timeline-description {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .timeline-time {
+            color: #999;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+
+        .status-atual {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .resumo-pedido {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        .resumo-titulo {
+            font-size: 1.3em;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .item-quantidade {
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 10px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #764ba2;
+            margin-top: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.5em;
+            padding: 50px;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-voltar {
+            display: inline-block;
+            padding: 12px 25px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-voltar:hover {
+            background: #f8f9fa;
+            transform: scale(1.05);
+        }
+
+        .refresh-indicator {
+            text-align: center;
+            color: white;
+            font-size: 0.9em;
+            margin-top: 20px;
+            opacity: 0.8;
+        }
+
+        .animacao-prato {
+            font-size: 4em;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .timeline-item {
+                padding-left: 60px;
+            }
+
+            .timeline-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.4em;
+            }
+
+            .timeline::before {
+                left: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍽️ Rastrear Pedido</h1>
+            <p>Acompanhe o status do seu pedido em tempo real</p>
+        </header>
+
+        <div id="loading" class="loading">Carregando informações do pedido...</div>
+
+        <div id="pedidoContent" style="display: none;">
+            <div class="card">
+                <div class="animacao-prato">🍳</div>
+                
+                <div class="status-atual" id="statusAtual">
+                    Status do Pedido
+                </div>
+
+                <div class="pedido-info">
+                    <div class="pedido-numero" id="pedidoNumero">#--</div>
+                    <div class="pedido-mesa" id="pedidoMesa">Mesa --</div>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-item" id="step-pendente">
+                        <div class="timeline-icon">📝</div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Pedido Recebido</div>
+                            <div class="timeline-description">Seu pedido foi enviado para a cozinha</div>
+                            <div class="timeline-time" id="time-pendente"></div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item" id="step-preparando">
+                        <div class="timeline-icon">👨‍🍳</div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Em Preparo</div>
+                            <div class="timeline-description">Seu pedido está sendo preparado</div>
+                            <div class="timeline-time" id="time-preparando"></div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item" id="step-pronto">
+                        <div class="timeline-icon">✅</div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Pronto para Entrega</div>
+                            <div class="timeline-description">Seu pedido está pronto e será entregue em breve</div>
+                            <div class="timeline-time" id="time-pronto"></div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item" id="step-concluido">
+                        <div class="timeline-icon">🏁</div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Pedido Entregue</div>
+                            <div class="timeline-description">Aproveite sua refeição!</div>
+                            <div class="timeline-time" id="time-concluido"></div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item" id="step-cancelado">
+                        <div class="timeline-icon">❌</div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Pedido Cancelado</div>
+                            <div class="timeline-description">Seu pedido foi cancelado</div>
+                            <div class="timeline-time" id="time-cancelado"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="resumo-pedido">
+                    <div class="resumo-titulo">📋 Resumo do Pedido</div>
+                    <div id="resumoItens"></div>
+                    <div class="total-row">
+                        <span>Total:</span>
+                        <span id="resumoTotal">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <a href="/" class="btn-voltar">🏠 Voltar ao Início</a>
+                </div>
+            </div>
+
+            <div class="refresh-indicator">
+                🔄 Atualizando automaticamente a cada 5 segundos
+            </div>
+        </div>
+
+        <div id="errorMessage" class="error-message" style="display: none;">
+            <h2>⚠️ Erro</h2>
+            <p id="errorText"></p>
+            <a href="/" class="btn-voltar">🏠 Voltar ao Início</a>
+        </div>
+    </div>
+
+    <script>
+        let pedidoId = null;
+        let mesaId = null;
+
+        // Extrai parâmetros da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        pedidoId = urlParams.get('pedido');
+        mesaId = urlParams.get('mesa');
+
+        if (!pedidoId && !mesaId) {
+            mostrarErro('Número do pedido ou mesa não identificado!');
+        }
+
+        async function carregarPedido() {
+            try {
+                let url = '/api/pedidos';
+                if (pedidoId) {
+                    url += `?mesaId=${mesaId || ''}`;
+                } else if (mesaId) {
+                    url += `?mesaId=${mesaId}`;
+                }
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.success && data.pedidos.length > 0) {
+                    // Pega o pedido mais recente da mesa
+                    const pedido = data.pedidos.sort((a, b) => 
+                        new Date(b.dataHora) - new Date(a.dataHora)
+                    )[0];
+
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('pedidoContent').style.display = 'block';
+                    
+                    atualizarTela(pedido);
+                } else {
+                    mostrarErro('Nenhum pedido encontrado para esta mesa.');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                mostrarErro('Erro ao carregar informações do pedido. Tente novamente.');
+            }
+        }
+
+        function mostrarErro(mensagem) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('errorText').textContent = mensagem;
+        }
+
+        function atualizarTela(pedido) {
+            // Atualiza informações básicas
+            document.getElementById('pedidoNumero').textContent = `#${pedido.id}`;
+            document.getElementById('pedidoMesa').textContent = `Mesa ${pedido.mesaId}`;
+
+            // Mapeamento de status para exibição
+            const statusMap = {
+                'pendente': '📝 Pedido Recebido',
+                'preparando': '👨‍🍳 Em Preparo',
+                'pronto': '✅ Pronto para Entrega',
+                'concluido': '🏁 Pedido Entregue',
+                'cancelado': '❌ Pedido Cancelado'
+            };
+
+            document.getElementById('statusAtual').textContent = statusMap[pedido.status] || 'Status Desconhecido';
+
+            // Atualiza timeline
+            atualizarTimeline(pedido);
+
+            // Atualiza resumo do pedido
+            atualizarResumo(pedido);
+        }
+
+        function atualizarTimeline(pedido) {
+            const steps = ['pendente', 'preparando', 'pronto', 'concluido', 'cancelado'];
+            const statusOrder = {
+                'pendente': 1,
+                'preparando': 2,
+                'pronto': 3,
+                'concluido': 4,
+                'cancelado': 5
+            };
+
+            const currentStatusIndex = statusOrder[pedido.status] || 0;
+
+            steps.forEach((step, index) => {
+                const element = document.getElementById(`step-${step}`);
+                const timeElement = document.getElementById(`time-${step}`);
+                
+                // Reseta classes
+                element.classList.remove('active', 'completed');
+
+                if (step === pedido.status) {
+                    element.classList.add('active');
+                    if (pedido.dataAtualizacao) {
+                        timeElement.textContent = formatarData(pedido.dataAtualizacao);
+                    } else {
+                        timeElement.textContent = formatarData(pedido.dataHora);
+                    }
+                } else if (statusOrder[step] < currentStatusIndex) {
+                    element.classList.add('completed');
+                    timeElement.textContent = 'Concluído';
+                } else if (step === 'cancelado' && pedido.status === 'cancelado') {
+                    element.classList.add('active');
+                    timeElement.textContent = formatarData(pedido.dataAtualizacao || pedido.dataHora);
+                }
+            });
+
+            // Remove steps irrelevantes
+            if (pedido.status === 'cancelado') {
+                document.getElementById('step-pronto').style.display = 'none';
+                document.getElementById('step-concluido').style.display = 'none';
+            } else {
+                document.getElementById('step-cancelado').style.display = 'none';
+            }
+        }
+
+        function atualizarResumo(pedido) {
+            const resumoItens = document.getElementById('resumoItens');
+            const resumoTotal = document.getElementById('resumoTotal');
+
+            let itensHTML = '';
+            pedido.itens.forEach(item => {
+                itensHTML += `
+                    <div class="item-row">
+                        <span><span class="item-quantidade">${item.quantidade}x</span> ${item.nome}</span>
+                        <span>R$ ${item.subtotal.toFixed(2).replace('.', ',')}</span>
+                    </div>
+                `;
+            });
+
+            resumoItens.innerHTML = itensHTML;
+            resumoTotal.textContent = `R$ ${pedido.total.toFixed(2).replace('.', ',')}`;
+        }
+
+        function formatarData(dataISO) {
+            const data = new Date(dataISO);
+            return data.toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Carrega pedido ao iniciar e atualiza a cada 5 segundos
+        carregarPedido();
+        setInterval(carregarPedido, 5000);
+    </script>
+</body>
+</html>
