@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fazer Pedido - Restaurante</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Cardápio | Restaurante</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #ec4899;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #d4af37;
+            --accent-light: #f4e5b0;
+            --border: #334155;
             --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --dark: #1e293b;
-            --gray: #64748b;
-            --light: #f8fafc;
-            --white: #ffffff;
-            --shadow: 0 10px 40px rgba(0,0,0,0.1);
-            --radius: 16px;
+            --radius: 4px;
+            --shadow: 0 4px 24px rgba(0,0,0,0.3);
         }
 
         * {
@@ -28,292 +28,295 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%), 
-                        url('https://images.pexels.com/photos/28559494/pexels-photo-28559494.jpeg?_gl=1*1kpjdt3*_ga*MjEwOTkzMzI1OS4xNzg0Njg1Mjg4*_ga_8JE65Q40S6*czE3ODQ2ODUyODgkbzEkZzEkdDE3ODQ2ODUzMDckajQxJGwwJGgw') center/cover no-repeat fixed;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 20px;
-            background-blend-mode: multiply;
+            line-height: 1.6;
+        }
+
+        .background-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.pexels.com/photos/28559494/pexels-photo-28559494.jpeg?_gl=1*1kpjdt3*_ga*MjEwOTkzMzI1OS4xNzg0Njg1Mjg4*_ga_8JE65Q40S6*czE3ODQ2ODUyODgkbzEkZzEkdDE3ODQ2ODUzMDckajQxJGwwJGgw') center/cover no-repeat;
+            opacity: 0.15;
+            z-index: -1;
+            filter: grayscale(30%);
         }
 
         .container {
-            max-width: 900px;
+            max-width: 720px;
             margin: 0 auto;
-            background: var(--white);
-            border-radius: var(--radius);
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            padding: 48px 24px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 35px;
-            padding-bottom: 25px;
-            border-bottom: 3px solid transparent;
-            background: linear-gradient(var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            border-image: linear-gradient(to right, var(--primary), var(--secondary));
-            border-image-slice: 1;
+            margin-bottom: 48px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--border);
         }
 
         header h1 {
-            color: var(--primary);
-            font-size: 2.3em;
-            font-weight: 700;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 300;
         }
 
         .mesa-info {
-            background: linear-gradient(135deg, var(--light), #e0e7ff);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
             text-align: center;
-            border: 2px solid rgba(99, 102, 241, 0.1);
+            padding: 16px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(8px);
         }
 
         .mesa-info h2 {
-            color: var(--primary);
-            font-size: 1.8em;
-            font-weight: 600;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: var(--accent);
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .cardapio-section {
-            margin-bottom: 35px;
-            background: var(--light);
-            padding: 25px;
-            border-radius: 12px;
+            margin-bottom: 40px;
         }
 
         .categoria-titulo {
-            color: var(--primary);
-            font-size: 1.6em;
-            font-weight: 600;
-            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 24px;
             padding-bottom: 12px;
-            border-bottom: 2px solid rgba(99, 102, 241, 0.2);
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+        }
+
+        .categoria-titulo span {
+            opacity: 0.7;
+            font-size: 1.2rem;
         }
 
         .produto-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 18px;
-            margin-bottom: 12px;
-            background: var(--white);
-            border-radius: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 2px solid transparent;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+            transition: all 0.2s ease;
+        }
+
+        .produto-item:last-child {
+            border-bottom: none;
         }
 
         .produto-item:hover {
-            background: linear-gradient(135deg, #f8fafc, #e0e7ff);
-            transform: translateX(8px);
-            border-color: rgba(99, 102, 241, 0.3);
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+            background: transparent;
         }
 
         .produto-info {
             flex: 1;
+            padding-right: 24px;
         }
 
         .produto-nome {
-            font-weight: 600;
-            font-size: 1.15em;
-            color: var(--dark);
-            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            font-family: 'Playfair Display', serif;
         }
 
         .produto-preco {
-            color: var(--secondary);
-            font-weight: 700;
-            font-size: 1.25em;
+            color: var(--accent);
+            font-weight: 400;
+            font-size: 1rem;
+            font-feature-settings: "tnum";
         }
 
         .produto-controls {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
         }
 
         .qty-btn {
-            width: 40px;
-            height: 40px;
-            border: none;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            font-size: 1.6em;
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 1.2rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            font-family: 'Playfair Display', serif;
         }
 
         .qty-btn:hover {
-            transform: scale(1.15) rotate(90deg);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            border-color: var(--accent);
+            color: var(--accent);
         }
 
         .qty-value {
-            font-size: 1.5em;
-            font-weight: 700;
-            min-width: 35px;
+            font-size: 1rem;
+            font-weight: 500;
+            min-width: 24px;
             text-align: center;
-            color: var(--primary);
-            background: var(--light);
-            padding: 8px 12px;
-            border-radius: 8px;
+            color: var(--text-primary);
+            font-feature-settings: "tnum";
         }
 
         .resumo-pedido {
-            background: linear-gradient(135deg, var(--light), #fef3c7);
-            padding: 25px;
-            border-radius: 12px;
-            margin-top: 30px;
-            border: 2px solid rgba(245, 158, 11, 0.2);
+            margin-top: 48px;
+            padding: 32px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(8px);
         }
 
         .resumo-titulo {
-            font-size: 1.6em;
-            color: var(--warning);
-            margin-bottom: 18px;
-            font-weight: 600;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 500;
         }
 
         .resumo-item {
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px dashed rgba(100, 116, 139, 0.3);
+            padding: 10px 0;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
         }
 
         .resumo-total {
             display: flex;
             justify-content: space-between;
-            padding: 18px 0;
-            font-size: 1.6em;
-            font-weight: 700;
-            color: var(--secondary);
-            border-top: 3px solid var(--primary);
-            margin-top: 12px;
+            padding: 20px 0 0;
+            margin-top: 16px;
+            border-top: 1px solid var(--border);
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--accent);
+            font-family: 'Playfair Display', serif;
         }
 
         .observacoes {
             width: 100%;
-            padding: 18px;
-            border: 2px solid rgba(100, 116, 139, 0.3);
-            border-radius: 12px;
-            font-size: 1em;
-            margin: 25px 0;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            margin: 24px 0;
             resize: vertical;
-            font-family: inherit;
-            transition: all 0.3s ease;
-            background: var(--white);
+            font-family: 'Inter', sans-serif;
+            background: rgba(15, 23, 42, 0.5);
+            color: var(--text-primary);
+            min-height: 100px;
+        }
+
+        .observacoes::placeholder {
+            color: var(--text-secondary);
         }
 
         .observacoes:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            border-color: var(--accent);
         }
 
         .btn-enviar {
             width: 100%;
             padding: 18px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
+            background: var(--accent);
+            color: var(--bg-primary);
             border: none;
-            border-radius: 50px;
-            font-size: 1.4em;
-            font-weight: 700;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-enviar::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .btn-enviar:hover::before {
-            left: 100%;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Inter', sans-serif;
         }
 
         .btn-enviar:hover:not(:disabled) {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+            background: var(--accent-light);
         }
 
         .btn-enviar:disabled {
-            background: linear-gradient(135deg, #9ca3af, #6b7280);
+            background: var(--border);
+            color: var(--text-secondary);
             cursor: not-allowed;
-            transform: none;
-            opacity: 0.7;
         }
 
         .loading {
             text-align: center;
             padding: 60px;
-            font-size: 1.5em;
-            color: var(--primary);
-            font-weight: 500;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 300;
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 25px;
+                padding: 32px 20px;
             }
 
             header h1 {
-                font-size: 1.9em;
+                font-size: 2rem;
             }
 
             .produto-item {
                 flex-direction: column;
-                gap: 18px;
-                text-align: center;
+                align-items: flex-start;
+                gap: 16px;
             }
 
             .produto-controls {
                 width: 100%;
-                justify-content: center;
-            }
-
-            .resumo-total {
-                font-size: 1.3em;
+                justify-content: flex-end;
             }
         }
     </style>
 </head>
 <body>
+    <div class="background-image"></div>
+    
     <div class="container">
         <header>
-            <h1>🍽️ Faça seu Pedido</h1>
-            <p style="color: var(--gray); font-weight: 500;">Selecione os itens desejados do cardápio</p>
+            <h1>Cardápio</h1>
+            <p>Selecione seus pratos favoritos</p>
         </header>
 
         <div id="loading" class="loading">
-            <div style="font-size: 3em; margin-bottom: 20px;">📋</div>
             Carregando cardápio...
         </div>
 
@@ -326,20 +329,20 @@
                 <div id="cardapioContainer"></div>
 
                 <div class="resumo-pedido">
-                    <div class="resumo-titulo">🛒 Resumo do Pedido</div>
+                    <div class="resumo-titulo">Seu Pedido</div>
                     <div id="resumoItens">
-                        <p style="color: var(--gray);">Nenhum item selecionado</p>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem;">Nenhum item selecionado</p>
                     </div>
                     <div class="resumo-total">
-                        <span>Total:</span>
+                        <span>Total</span>
                         <span id="resumoTotal">R$ 0,00</span>
                     </div>
                 </div>
 
-                <textarea class="observacoes" id="observacoes" placeholder="📝 Observações adicionais (opcional)... Ex: Sem cebola, ponto da carne, etc."></textarea>
+                <textarea class="observacoes" id="observacoes" placeholder="Observações adicionais (opcional)..."></textarea>
 
                 <button type="submit" class="btn-enviar" id="btnEnviar" disabled>
-                    🚀 Enviar Pedido
+                    Confirmar Pedido
                 </button>
             </form>
         </div>
@@ -405,10 +408,10 @@
                 const section = document.createElement('div');
                 section.className = 'cardapio-section';
                 
-                const icone = iconesCategoria[categoria] || '📌';
+                const icone = iconesCategoria[categoria] || '•';
                 const titulo = document.createElement('h3');
                 titulo.className = 'categoria-titulo';
-                titulo.textContent = `${icone} ${categoria}`;
+                titulo.innerHTML = `<span>${icone}</span> ${categoria}`;
                 section.appendChild(titulo);
 
                 produtos.forEach(produto => {
@@ -420,7 +423,7 @@
                             <div class="produto-preco">R$ ${produto.preco.toFixed(2).replace('.', ',')}</div>
                         </div>
                         <div class="produto-controls">
-                            <button type="button" class="qty-btn" onclick="alterarQuantidade(${produto.id}, -1)">-</button>
+                            <button type="button" class="qty-btn" onclick="alterarQuantidade(${produto.id}, -1)">−</button>
                             <span class="qty-value" id="qty-${produto.id}">0</span>
                             <button type="button" class="qty-btn" onclick="alterarQuantidade(${produto.id}, 1)">+</button>
                         </div>
@@ -472,7 +475,7 @@
             }
 
             if (!temItens) {
-                resumoItens.innerHTML = '<p style="color: var(--gray);">Nenhum item selecionado</p>';
+                resumoItens.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.95rem;">Nenhum item selecionado</p>';
                 btnEnviar.disabled = true;
             } else {
                 resumoItens.innerHTML = itensHTML;
