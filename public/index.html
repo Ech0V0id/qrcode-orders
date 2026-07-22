@@ -4,7 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Pedidos - Restaurantes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --shadow: 0 10px 40px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+            --radius: 16px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,123 +29,232 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         header {
             text-align: center;
             color: white;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
+            padding: 40px 20px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
         header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 2.8em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            letter-spacing: -1px;
         }
 
         header p {
             font-size: 1.2em;
-            opacity: 0.9;
+            opacity: 0.95;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .mesas-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
             margin-bottom: 40px;
         }
 
         .mesa-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease;
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mesa-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
         }
 
         .mesa-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .mesa-card:hover::before {
+            transform: scaleX(1);
         }
 
         .mesa-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light);
         }
 
         .mesa-numero {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #667eea;
+            font-size: 2em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .status-badge {
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: bold;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
         }
 
         .status-disponivel {
-            background: #d4edda;
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
             color: #155724;
+            box-shadow: 0 4px 15px rgba(21, 87, 36, 0.2);
         }
 
         .status-ocupada {
-            background: #f8d7da;
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
             color: #721c24;
+            box-shadow: 0 4px 15px rgba(114, 28, 36, 0.2);
         }
 
         .qr-container {
             text-align: center;
-            margin: 20px 0;
+            margin: 25px 0;
+            padding: 20px;
+            background: var(--light);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .qr-container:hover {
+            background: #f1f5f9;
+            transform: scale(1.02);
         }
 
         .qr-container img {
-            max-width: 180px;
-            border: 3px solid #667eea;
-            border-radius: 10px;
-            padding: 10px;
+            max-width: 200px;
+            border: 3px solid var(--primary);
+            border-radius: 12px;
+            padding: 15px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .qr-container img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.25);
         }
 
         .btn {
             display: inline-block;
-            padding: 12px 25px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px 30px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
             text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
             cursor: pointer;
             width: 100%;
             text-align: center;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
         }
 
         .admin-link {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 40px;
+            padding: 30px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .admin-link a {
             color: white;
-            text-decoration: underline;
+            text-decoration: none;
             font-size: 1.1em;
+            font-weight: 500;
+            padding: 12px 25px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .admin-link a:hover {
+            background: white;
+            color: var(--primary);
+            transform: scale(1.05);
         }
 
         .loading {
@@ -136,14 +262,61 @@
             color: white;
             font-size: 1.5em;
             padding: 50px;
+            font-weight: 300;
+        }
+
+        .feature-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
+            color: white;
+        }
+
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .feature-desc {
+            font-size: 0.9em;
+            opacity: 0.9;
+            font-weight: 300;
         }
 
         @media (max-width: 768px) {
             header h1 {
-                font-size: 1.8em;
+                font-size: 2em;
+            }
+
+            header p {
+                font-size: 1em;
             }
 
             .mesas-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mesa-card {
+                padding: 20px;
+            }
+
+            .feature-section {
                 grid-template-columns: 1fr;
             }
         }
@@ -153,11 +326,32 @@
     <div class="container">
         <header>
             <h1>🍽️ Sistema de Pedidos</h1>
-            <p>Escaneie o QR Code da sua mesa para fazer seu pedido</p>
+            <p>Escaneie o QR Code da sua mesa e faça seu pedido de forma rápida e prática</p>
         </header>
 
-        <div id="loading" class="loading">Carregando mesas...</div>
+        <div id="loading" class="loading">
+            <div style="font-size: 3em; margin-bottom: 20px;">⏳</div>
+            Carregando mesas...
+        </div>
         <div id="mesasGrid" class="mesas-grid"></div>
+
+        <div class="feature-section">
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <div class="feature-title">Pedido Digital</div>
+                <div class="feature-desc">Faça seu pedido direto do celular</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Rápido</div>
+                <div class="feature-desc">Sem filas, tudo na palma da mão</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <div class="feature-title">Acompanhe</div>
+                <div class="feature-desc">Veja o status do seu pedido em tempo real</div>
+            </div>
+        </div>
 
         <div class="admin-link">
             <a href="/admin">👨‍🍳 Acessar Painel da Cozinha</a>
@@ -179,21 +373,23 @@
                     data.mesas.forEach(mesa => {
                         const mesaCard = document.createElement('div');
                         mesaCard.className = 'mesa-card';
+                        const statusTexto = mesa.status === 'disponivel' ? 'Disponível' : 'Ocupada';
                         mesaCard.innerHTML = `
                             <div class="mesa-header">
                                 <span class="mesa-numero">Mesa ${mesa.numero}</span>
-                                <span class="status-badge status-${mesa.status}">${mesa.status.toUpperCase()}</span>
+                                <span class="status-badge status-${mesa.status}">${statusTexto}</span>
                             </div>
                             <div class="qr-container">
                                 <img src="${mesa.qrCode}" alt="QR Code Mesa ${mesa.numero}">
+                                <p style="margin-top: 15px; color: var(--gray); font-size: 0.9em; font-weight: 500;">Escaneie para pedir</p>
                             </div>
-                            <a href="/pedido?mesa=${mesa.id}" class="btn">Fazer Pedido</a>
+                            <a href="/pedido?mesa=${mesa.id}" class="btn">🛒 Fazer Pedido</a>
                         `;
                         mesasGrid.appendChild(mesaCard);
                     });
                 }
             } catch (error) {
-                document.getElementById('loading').innerHTML = 'Erro ao carregar mesas. Atualize a página.';
+                document.getElementById('loading').innerHTML = '❌ Erro ao carregar mesas. Atualize a página.';
                 console.error('Erro:', error);
             }
         }

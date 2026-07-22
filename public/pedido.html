@@ -4,7 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fazer Pedido - Restaurante</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --shadow: 0 10px 40px rgba(0,0,0,0.1);
+            --radius: 16px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,72 +28,95 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
         }
 
         header {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #667eea;
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 3px solid transparent;
+            background: linear-gradient(var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            border-image: linear-gradient(to right, var(--primary), var(--secondary));
+            border-image-slice: 1;
         }
 
         header h1 {
-            color: #667eea;
-            font-size: 2em;
-            margin-bottom: 10px;
+            color: var(--primary);
+            font-size: 2.3em;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .mesa-info {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--light), #e0e7ff);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
             text-align: center;
+            border: 2px solid rgba(99, 102, 241, 0.1);
         }
 
         .mesa-info h2 {
-            color: #764ba2;
+            color: var(--primary);
+            font-size: 1.8em;
+            font-weight: 600;
         }
 
         .cardapio-section {
-            margin-bottom: 30px;
+            margin-bottom: 35px;
+            background: var(--light);
+            padding: 25px;
+            border-radius: 12px;
         }
 
         .categoria-titulo {
-            color: #667eea;
-            font-size: 1.5em;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #eee;
+            color: var(--primary);
+            font-size: 1.6em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(99, 102, 241, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .produto-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            margin-bottom: 10px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            transition: all 0.3s ease;
+            padding: 18px;
+            margin-bottom: 12px;
+            background: var(--white);
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .produto-item:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
+            background: linear-gradient(135deg, #f8fafc, #e0e7ff);
+            transform: translateX(8px);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
         }
 
         .produto-info {
@@ -85,138 +124,181 @@
         }
 
         .produto-nome {
-            font-weight: bold;
-            font-size: 1.1em;
-            color: #333;
+            font-weight: 600;
+            font-size: 1.15em;
+            color: var(--dark);
+            margin-bottom: 5px;
         }
 
         .produto-preco {
-            color: #764ba2;
-            font-weight: bold;
-            font-size: 1.2em;
+            color: var(--secondary);
+            font-weight: 700;
+            font-size: 1.25em;
         }
 
         .produto-controls {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .qty-btn {
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             border: none;
             border-radius: 50%;
-            background: #667eea;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            font-size: 1.5em;
+            font-size: 1.6em;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
 
         .qty-btn:hover {
-            background: #764ba2;
-            transform: scale(1.1);
+            transform: scale(1.15) rotate(90deg);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
         }
 
         .qty-value {
-            font-size: 1.3em;
-            font-weight: bold;
-            min-width: 30px;
+            font-size: 1.5em;
+            font-weight: 700;
+            min-width: 35px;
             text-align: center;
+            color: var(--primary);
+            background: var(--light);
+            padding: 8px 12px;
+            border-radius: 8px;
         }
 
         .resumo-pedido {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
+            background: linear-gradient(135deg, var(--light), #fef3c7);
+            padding: 25px;
+            border-radius: 12px;
             margin-top: 30px;
+            border: 2px solid rgba(245, 158, 11, 0.2);
         }
 
         .resumo-titulo {
-            font-size: 1.5em;
-            color: #667eea;
-            margin-bottom: 15px;
+            font-size: 1.6em;
+            color: var(--warning);
+            margin-bottom: 18px;
+            font-weight: 600;
         }
 
         .resumo-item {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #dee2e6;
+            padding: 12px 0;
+            border-bottom: 1px dashed rgba(100, 116, 139, 0.3);
         }
 
         .resumo-total {
             display: flex;
             justify-content: space-between;
-            padding: 15px 0;
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #764ba2;
-            border-top: 2px solid #667eea;
-            margin-top: 10px;
+            padding: 18px 0;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: var(--secondary);
+            border-top: 3px solid var(--primary);
+            margin-top: 12px;
         }
 
         .observacoes {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #dee2e6;
-            border-radius: 10px;
+            padding: 18px;
+            border: 2px solid rgba(100, 116, 139, 0.3);
+            border-radius: 12px;
             font-size: 1em;
-            margin: 20px 0;
+            margin: 25px 0;
             resize: vertical;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .observacoes:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
         }
 
         .btn-enviar {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
             border: none;
-            border-radius: 25px;
-            font-size: 1.3em;
-            font-weight: bold;
+            border-radius: 50px;
+            font-size: 1.4em;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn-enviar:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        .btn-enviar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn-enviar:hover::before {
+            left: 100%;
+        }
+
+        .btn-enviar:hover:not(:disabled) {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
         }
 
         .btn-enviar:disabled {
-            background: #ccc;
+            background: linear-gradient(135deg, #9ca3af, #6b7280);
             cursor: not-allowed;
             transform: none;
+            opacity: 0.7;
         }
 
         .loading {
             text-align: center;
-            padding: 50px;
+            padding: 60px;
             font-size: 1.5em;
-            color: #667eea;
-        }
-
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            margin-top: 20px;
+            color: var(--primary);
+            font-weight: 500;
         }
 
         @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+
+            header h1 {
+                font-size: 1.9em;
+            }
+
             .produto-item {
                 flex-direction: column;
-                gap: 15px;
+                gap: 18px;
                 text-align: center;
             }
 
             .produto-controls {
                 width: 100%;
                 justify-content: center;
+            }
+
+            .resumo-total {
+                font-size: 1.3em;
             }
         }
     </style>
@@ -225,10 +307,13 @@
     <div class="container">
         <header>
             <h1>🍽️ Faça seu Pedido</h1>
-            <p>Selecione os itens desejados</p>
+            <p style="color: var(--gray); font-weight: 500;">Selecione os itens desejados do cardápio</p>
         </header>
 
-        <div id="loading" class="loading">Carregando cardápio...</div>
+        <div id="loading" class="loading">
+            <div style="font-size: 3em; margin-bottom: 20px;">📋</div>
+            Carregando cardápio...
+        </div>
 
         <div id="pedidoContent" style="display: none;">
             <div class="mesa-info">
@@ -239,9 +324,9 @@
                 <div id="cardapioContainer"></div>
 
                 <div class="resumo-pedido">
-                    <div class="resumo-titulo">📋 Resumo do Pedido</div>
+                    <div class="resumo-titulo">🛒 Resumo do Pedido</div>
                     <div id="resumoItens">
-                        <p style="color: #666;">Nenhum item selecionado</p>
+                        <p style="color: var(--gray);">Nenhum item selecionado</p>
                     </div>
                     <div class="resumo-total">
                         <span>Total:</span>
@@ -249,18 +334,12 @@
                     </div>
                 </div>
 
-                <textarea class="observacoes" id="observacoes" placeholder="Observações adicionais (opcional)..."></textarea>
+                <textarea class="observacoes" id="observacoes" placeholder="📝 Observações adicionais (opcional)... Ex: Sem cebola, ponto da carne, etc."></textarea>
 
                 <button type="submit" class="btn-enviar" id="btnEnviar" disabled>
-                    🛒 Enviar Pedido
+                    🚀 Enviar Pedido
                 </button>
             </form>
-        </div>
-
-        <div id="successMessage" class="success-message" style="display: none;">
-            <h2>✅ Pedido Enviado com Sucesso!</h2>
-            <p id="pedidoNumero"></p>
-            <p>Aguarde que logo traremos seu pedido.</p>
         </div>
     </div>
 
@@ -293,7 +372,7 @@
                     document.getElementById('pedidoContent').style.display = 'block';
                 }
             } catch (error) {
-                document.getElementById('loading').innerHTML = 'Erro ao carregar cardápio.';
+                document.getElementById('loading').innerHTML = '<div style="font-size: 3em; margin-bottom: 20px;">❌</div>Erro ao carregar cardápio.';
                 console.error('Erro:', error);
             }
         }
@@ -310,14 +389,24 @@
                 categorias[produto.categoria].push(produto);
             });
 
+            // Mapeamento de ícones por categoria
+            const iconesCategoria = {
+                'Lanches': '🍔',
+                'Bebidas': '🥤',
+                'Porções': '🍟',
+                'Sobremesas': '🍰',
+                'Pratos': '🍽️'
+            };
+
             // Exibe cada categoria
             for (const [categoria, produtos] of Object.entries(categorias)) {
                 const section = document.createElement('div');
                 section.className = 'cardapio-section';
                 
+                const icone = iconesCategoria[categoria] || '📌';
                 const titulo = document.createElement('h3');
                 titulo.className = 'categoria-titulo';
-                titulo.textContent = categoria;
+                titulo.textContent = `${icone} ${categoria}`;
                 section.appendChild(titulo);
 
                 produtos.forEach(produto => {
@@ -373,7 +462,7 @@
 
                     itensHTML += `
                         <div class="resumo-item">
-                            <span>${produto.nome} x${quantidade}</span>
+                            <span><strong>${quantidade}x</strong> ${produto.nome}</span>
                             <span>R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
                         </div>
                     `;
@@ -381,7 +470,7 @@
             }
 
             if (!temItens) {
-                resumoItens.innerHTML = '<p style="color: #666;">Nenhum item selecionado</p>';
+                resumoItens.innerHTML = '<p style="color: var(--gray);">Nenhum item selecionado</p>';
                 btnEnviar.disabled = true;
             } else {
                 resumoItens.innerHTML = itensHTML;
